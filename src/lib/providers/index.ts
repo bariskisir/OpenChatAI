@@ -1,8 +1,9 @@
 import { openCodeZen } from "./opencode-zen";
 import { openRouter } from "./openrouter";
+import { together } from "./together";
 import { Provider } from "@/lib/types";
 
-export const PROVIDERS: Provider[] = [openCodeZen, openRouter];
+export const PROVIDERS: Provider[] = [openCodeZen, openRouter, together];
 
 export const DEFAULT_PROVIDER = process.env.DEFAULT_PROVIDER || "opencode-zen";
 export const DEFAULT_MODEL = process.env.DEFAULT_MODEL || "minimax-m2.5-free";

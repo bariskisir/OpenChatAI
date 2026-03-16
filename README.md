@@ -21,6 +21,9 @@ A ChatGPT-like open chat interface built with Next.js, TypeScript, and Tailwind 
 ### OpenRouter
 - **Models:** hunter-alpha, healer-alpha, trinity-large-preview:free, nemotron-3-nano-30b-a3b:free, trinity-mini:free, openrouter/free
 
+### Together AI
+- **Models:** ServiceNow-AI/Apriel-1.6-15b-Thinker, ServiceNow-AI/Apriel-1.5-15b-Thinker
+
 ## Tech Stack
 
 - **Framework:** Next.js 16 (App Router)
