@@ -119,7 +119,7 @@ export default function ChatWindow() {
         )}
       </div>
 
-      <div className="w-full max-w-full border-t border-border bg-background px-1 py-2.5 md:ml-12 md:max-w-[850px] md:px-0 md:py-6">
+      <div className="w-full border-t border-border bg-background px-2 py-2.5 md:ml-12 md:max-w-[850px] md:px-0 md:py-6 shrink-0">
         <ChatInput />
       </div>
     </div>

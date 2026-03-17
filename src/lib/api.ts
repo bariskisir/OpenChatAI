@@ -40,10 +40,28 @@ export async function streamChat(
 
     const decoder = new TextDecoder();
     let buffer = "";
+    
+    let hasReceivedChunk = false;
+    let timeoutId: ReturnType<typeof setTimeout> | null = setTimeout(() => {
+      if (!hasReceivedChunk) {
+        onError("Request timed out (30s)");
+        reader.cancel();
+      }
+    }, 30000);
 
     while (true) {
       const { done, value } = await reader.read();
-      if (done) break;
+      
+      if (!hasReceivedChunk && timeoutId) {
+        hasReceivedChunk = true;
+        clearTimeout(timeoutId);
+        timeoutId = null;
+      }
+      
+      if (done) {
+        if (timeoutId) clearTimeout(timeoutId);
+        break;
+      }
 
       buffer += decoder.decode(value, { stream: true });
       const lines = buffer.split("\n");
@@ -54,6 +72,7 @@ export async function streamChat(
         if (!trimmed || !trimmed.startsWith("data: ")) continue;
         const data = trimmed.slice(6);
         if (data === "[DONE]") {
+          if (timeoutId) clearTimeout(timeoutId);
           onDone();
           return;
         }
@@ -67,6 +86,7 @@ export async function streamChat(
       }
     }
 
+    if (timeoutId) clearTimeout(timeoutId);
     onDone();
   } catch (err: unknown) {
     if (err instanceof DOMException && err.name === "AbortError") return;

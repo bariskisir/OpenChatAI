@@ -46,8 +46,8 @@ export default function ChatInput() {
   }
 
   return (
-    <div className="flex w-full max-w-full items-end gap-1 md:max-w-[850px] md:gap-2">
-      <div className="flex flex-1 items-center gap-0.5 rounded-2xl border border-border bg-surface px-1 py-1.5 shadow-lg transition-all focus-within:border-accent focus-within:ring-1 focus-within:ring-accent/20 md:gap-2 md:px-4 md:py-3">
+    <div className="flex w-full items-end gap-1 md:gap-2">
+      <div className="flex w-full flex-1 items-center gap-1.5 rounded-2xl border border-border bg-surface pl-2 pr-1.5 py-1.5 shadow-lg transition-all focus-within:border-accent focus-within:ring-1 focus-within:ring-accent/20 md:gap-2 md:px-4 md:py-3">
         <ModelSelector />
         <textarea
           ref={textareaRef}

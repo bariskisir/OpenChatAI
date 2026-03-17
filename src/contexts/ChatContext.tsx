@@ -44,11 +44,6 @@ function generateId(): string {
   return crypto.randomUUID();
 }
 
-function deriveTitle(content: string): string {
-  const cleaned = content.replace(/\n/g, " ").trim();
-  return cleaned.length > 40 ? cleaned.slice(0, 40) + "..." : cleaned;
-}
-
 export function ChatProvider({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<ChatState>({
     sessions: [],
@@ -76,17 +71,21 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
         },
       ];
     }
-    setState((prev) => ({
-      ...prev,
-      sessions,
-      activeSessionId: sessions[0].id,
-    }));
+    setTimeout(() => {
+      setState((prev) => ({
+        ...prev,
+        sessions,
+        activeSessionId: sessions[0].id,
+      }));
+    }, 0);
   }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
     if (window.innerWidth < 768) {
-      setState((prev) => ({ ...prev, sidebarOpen: false }));
+      setTimeout(() => {
+        setState((prev) => ({ ...prev, sidebarOpen: false }));
+      }, 0);
     }
   }, []);
 
@@ -150,7 +149,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
         return { ...prev, sessions, activeSessionId };
       });
     },
-    [persist, state.provider],
+    [persist],
   );
 
   const setModel = useCallback(
@@ -304,7 +303,6 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
 
       const updatedSessions = currentSessions.map((s) => {
         if (s.id !== finalSessionId) return s;
-        const isFirst = s.messages.length === 0;
         return {
           ...s,
           messages: [...s.messages, userMsg, assistantMsg],
