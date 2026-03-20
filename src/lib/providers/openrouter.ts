@@ -5,8 +5,6 @@ export const openRouter: Provider = {
   name: "OpenRouter",
   chatUrl: "https://openrouter.ai/api/v1/chat/completions",
   availableModels: [
-    "openrouter/hunter-alpha",
-    "openrouter/healer-alpha",
     "arcee-ai/trinity-large-preview:free",
     "nvidia/nemotron-3-nano-30b-a3b:free",
     "arcee-ai/trinity-mini:free",
