@@ -36,6 +36,28 @@ A ChatGPT-like open chat interface built with Next.js, TypeScript, and Tailwind 
 - **Streaming:** Server-Sent Events (SSE)
 - **Deploy:** Vercel
 
+## Installation - Local
+
+1. Clone the repository
+2. Install dependencies: `npm install`
+3. Add .env file with the template below. You can get all API keys for free from the providers.
+4. Run the development server: `npm run dev`
+5. Open [http://localhost:3000](http://localhost:3000) in your browser
+
+#### .env template
+
+```env
+# Server / App Configuration
+#DEFAULT_MODEL=moonshotai/kimi-k2.5
+#DEFAULT_PROVIDER=cline
+
+# API Keys
+CLINE_API_KEY=INSERT_API_KEY_HERE
+TOGETHER_API_KEY=INSERT_API_KEY_HERE
+OPENCODE_ZEN_API_KEY=INSERT_API_KEY_HERE
+OPENROUTER_API_KEY=INSERT_API_KEY_HERE
+```
+
 ## License
 
 MIT
