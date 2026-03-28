@@ -15,8 +15,11 @@ A ChatGPT-like open chat interface built with Next.js, TypeScript, and Tailwind 
 
 ## Supported Providers
 
+### Cline
+- **Models:** moonshotai/kimi-k2.5 (default), z-ai/glm-5, minimax/minimax-m2.5, z-ai/glm-4.6, xiaomi/mimo-v2-pro, minimax/minimax-m2.5:free, kwaipilot/kat-coder-pro, arcee-ai/trinity-large-preview:free, google/gemma-3-12b-it:free, google/gemma-3-27b-it:free, google/gemma-3-4b-it:free, google/gemma-3n-e2b-it:free, google/gemma-3n-e4b-it:free, nvidia/nemotron-3-super-120b-a12b:free
+
 ### OpenCode Zen
-- **Models:** minimax-m2.5-free (default), nemotron-3-super-free, big-pickle, trinity-large-preview-free, mimo-v2-flash-free
+- **Models:** minimax-m2.5-free, nemotron-3-super-free, big-pickle, trinity-large-preview-free, mimo-v2-flash-free
 
 ### OpenRouter
 - **Models:** hunter-alpha, healer-alpha, trinity-large-preview:free, nemotron-3-nano-30b-a3b:free, trinity-mini:free, openrouter/free
