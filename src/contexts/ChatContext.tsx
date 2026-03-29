@@ -44,6 +44,17 @@ function generateId(): string {
   return crypto.randomUUID();
 }
 
+function sanitizeGeneratedTitle(rawTitle: string): string {
+  return rawTitle
+    .replace(/<think>[\s\S]*?<\/think>/gi, " ")
+    .replace(/^['"`\s]+|['"`\s]+$/g, "")
+    .replace(/\r/g, "")
+    .split("\n")
+    .map((line) => line.trim())
+    .find((line) => line.length > 0)
+    ?.slice(0, 100) || "";
+}
+
 export function ChatProvider({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<ChatState>({
     sessions: [],
@@ -206,7 +217,8 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
       ): Promise<void> => {
         if (contextMessages.length === 0) return;
 
-        const titlePrompt = "Generate a short title for this conversation:\n";
+        const titlePrompt =
+          "Based on this conversation, generate a short plain-text title with a maximum of 6 words. Return only the title.";
 
         await new Promise(resolve => setTimeout(resolve, 1000));
 
@@ -214,48 +226,72 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
           const session = state.sessions.find((s) => s.id === sessionId);
           const currentProviderId = session?.provider || state.provider.id;
           const titleModel = session?.model || DEFAULT_MODEL;
+          const titleMessages: Array<Pick<Message, "role" | "content">> = [
+            ...contextMessages.map((m) => ({
+              role: m.role,
+              content: m.content,
+            })),
+            { role: "user", content: titlePrompt },
+          ];
 
-          const res = await fetch("/api/chat", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              providerId: currentProviderId,
-              model: titleModel,
-              stream: false,
-              messages: [
-                { role: "user", content: titlePrompt },
-                ...contextMessages.map((m) => ({
-                  role: m.role,
-                  content: m.content,
-                })),
-              ],
-            }),
-          });
+          let streamedTitle = "";
+          let streamFailed = false;
 
-          if (!res.ok) return;
+          await streamChat(
+            currentProviderId,
+            titleModel,
+            titleMessages.map((m) => ({
+              id: generateId(),
+              role: m.role,
+              content: m.content,
+              createdAt: Date.now(),
+            })),
+            (chunk) => {
+              streamedTitle += chunk;
+            },
+            () => {},
+            () => {
+              streamFailed = true;
+            },
+          );
 
-          const text = await res.text();
-          let title = "";
+          let title = sanitizeGeneratedTitle(streamedTitle);
 
-          try {
-            const parsed = JSON.parse(text);
-            title =
-              parsed.choices?.[0]?.message?.content ||
-              parsed.choices?.[0]?.text ||
-              parsed.content ||
-              "";
-          } catch {
-            title = text;
+          if (!title) {
+            const res = await fetch("/api/chat", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                providerId: currentProviderId,
+                model: titleModel,
+                stream: false,
+                messages: titleMessages,
+              }),
+            });
+
+            if (!res.ok) {
+              if (streamFailed) return;
+              return;
+            }
+
+            const text = await res.text();
+            let rawTitle = "";
+
+            try {
+              const parsed = JSON.parse(text);
+              rawTitle =
+                parsed.choices?.[0]?.message?.content ||
+                parsed.choices?.[0]?.text ||
+                parsed.content ||
+                parsed.output?.[0]?.content?.[0]?.text ||
+                "";
+            } catch {
+              rawTitle = text;
+            }
+
+            title = sanitizeGeneratedTitle(rawTitle);
           }
 
-          title =
-            title
-              .replace(/<think>[\s\S]*?<\/think>/gi, " ")
-              .replace(/\r/g, "")
-              .split("\n")
-              .map((line) => line.trim())
-              .find((line) => line.length > 0) || "";
-          title = title.slice(0, 100);
           if (!title) return;
 
           setState((prev) => {

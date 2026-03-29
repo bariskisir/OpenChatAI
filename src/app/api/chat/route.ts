@@ -41,9 +41,19 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    if (!stream) {
+      return new NextResponse(response.body, {
+        status: response.status,
+        headers: {
+          "Content-Type": response.headers.get("Content-Type") || "application/json",
+        },
+      });
+    }
+
     return new NextResponse(response.body, {
+      status: response.status,
       headers: {
-        "Content-Type": "text/event-stream",
+        "Content-Type": response.headers.get("Content-Type") || "text/event-stream",
         "Cache-Control": "no-cache",
         Connection: "keep-alive",
       },
