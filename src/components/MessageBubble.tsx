@@ -28,69 +28,71 @@ export default function MessageBubble({
   const showTyping = !isUser && !visibleContent;
 
   return (
-    <div
-      className={`flex w-full animate-fade-in ${
-        isUser ? "justify-end" : "justify-start"
-      }`}
-    >
-      <div
-        className={`max-w-[85%] md:max-w-3xl rounded-xl border px-3 py-2 md:px-4 md:py-3 text-[0.875rem] md:text-[0.925rem] leading-relaxed transition-colors ${
-          isUser
-            ? "bg-accent border-accent text-white shadow-sm"
-            : "bg-surface border-border text-text-primary overflow-x-auto"
-        }`}
-      >
-        {isUser ? (
-          <p className="whitespace-pre-wrap">{message.content}</p>
-        ) : (
-          <div
-            className={`markdown-body ${isStreaming ? "cursor-blink" : ""}`}
-          >
-            {showTyping ? (
-              <p className="flex items-center gap-1.5 min-h-[24px] !mb-0">
-                <span
-                  className="typing-dot h-1.5 w-1.5 rounded-full bg-text-secondary"
-                  style={{ animationDelay: "0ms" }}
-                />
-                <span
-                  className="typing-dot h-1.5 w-1.5 rounded-full bg-text-secondary"
-                  style={{ animationDelay: "200ms" }}
-                />
-                <span
-                  className="typing-dot h-1.5 w-1.5 rounded-full bg-text-secondary"
-                  style={{ animationDelay: "400ms" }}
-                />
-              </p>
-            ) : (
-              <ReactMarkdown
-                remarkPlugins={[remarkGfm]}
-                components={{
-                  code(props) {
-                    const { children, className, node, ref, ...rest } = props;
-                    const match = /language-(\w+)/.exec(className || "");
-                    return match ? (
-                      <SyntaxHighlighter
-                        {...rest}
-                        PreTag="div"
-                        language={match[1]}
-                        style={vscDarkPlus}
-                      >
-                        {String(children).replace(/\n$/, "")}
-                      </SyntaxHighlighter>
-                    ) : (
-                      <code {...rest} className={className}>
-                        {children}
-                      </code>
-                    );
-                  },
-                }}
-              >
-                {visibleContent}
-              </ReactMarkdown>
-            )}
-          </div>
-        )}
+    <div className={`message-row ${isUser ? "user" : "assistant"}`}>
+      {!isUser && (
+        <div className="message-avatar assistant">
+          <i className="bi bi-stars"></i>
+        </div>
+      )}
+
+      <div className="message-stack">
+        <div className={`message-meta ${isUser ? "user" : "assistant"}`}>
+          <span>{isUser ? "You" : "Assistant"}</span>
+        </div>
+
+        <div className={`message-bubble ${isUser ? "user" : "assistant"}`}>
+          {isUser ? (
+            <p style={{ whiteSpace: "pre-wrap", margin: 0 }}>{message.content}</p>
+          ) : (
+            <div
+              className={`markdown-body ${isStreaming ? "cursor-blink" : ""}`}
+            >
+              {showTyping ? (
+                <p
+                  className="d-flex align-items-center gap-2 mb-0"
+                  style={{ minHeight: 24 }}
+                >
+                  <span className="typing-dot" style={{ animationDelay: "0ms" }} />
+                  <span className="typing-dot" style={{ animationDelay: "200ms" }} />
+                  <span className="typing-dot" style={{ animationDelay: "400ms" }} />
+                </p>
+              ) : (
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm]}
+                  components={{
+                    code(props) {
+                      const { children, className, node, ref, ...rest } = props;
+                      const match = /language-(\w+)/.exec(className || "");
+
+                      return match ? (
+                        <SyntaxHighlighter
+                          PreTag="div"
+                          language={match[1]}
+                          style={vscDarkPlus}
+                        >
+                          {String(children).replace(/\n$/, "")}
+                        </SyntaxHighlighter>
+                      ) : (
+                        <code {...rest} className={className}>
+                          {children}
+                        </code>
+                      );
+                    },
+                  }}
+                >
+                  {visibleContent}
+                </ReactMarkdown>
+              )}
+            </div>
+          )}
+        </div>
       </div>
+
+      {isUser && (
+        <div className="message-avatar user">
+          <i className="bi bi-person"></i>
+        </div>
+      )}
     </div>
   );
 }
