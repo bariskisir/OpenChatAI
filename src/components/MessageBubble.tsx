@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Message } from "@/lib/types";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -22,6 +23,7 @@ export default function MessageBubble({
   isStreaming,
 }: MessageBubbleProps) {
   const isUser = message.role === "user";
+  const attachments = message.attachments || [];
   const visibleContent = isUser
     ? message.content
     : stripThinkTags(message.content);
@@ -42,7 +44,27 @@ export default function MessageBubble({
 
         <div className={`message-bubble ${isUser ? "user" : "assistant"}`}>
           {isUser ? (
-            <p style={{ whiteSpace: "pre-wrap", margin: 0 }}>{message.content}</p>
+            <div className="user-message-content">
+              {message.content ? (
+                <p style={{ whiteSpace: "pre-wrap", margin: 0 }}>{message.content}</p>
+              ) : null}
+
+              {attachments.length > 0 ? (
+                <div className="message-image-grid">
+                  {attachments.map((attachment) => (
+                    <Image
+                      key={attachment.id}
+                      src={attachment.dataUrl}
+                      alt={attachment.name}
+                      className="message-image"
+                      width={1200}
+                      height={900}
+                      unoptimized
+                    />
+                  ))}
+                </div>
+              ) : null}
+            </div>
           ) : (
             <div
               className={`markdown-body ${isStreaming ? "cursor-blink" : ""}`}

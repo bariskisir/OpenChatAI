@@ -8,7 +8,7 @@ import React, {
   useEffect,
   useRef,
 } from "react";
-import { ChatSession, Message, Provider } from "@/lib/types";
+import { ChatSession, ImageAttachment, Message, Provider } from "@/lib/types";
 import { loadSessions, saveSessions } from "@/lib/storage";
 import { PROVIDERS, streamChat, DEFAULT_PROVIDER, DEFAULT_MODEL, getDefaultProvider } from "@/lib/api";
 
@@ -25,7 +25,7 @@ interface ChatContextValue extends ChatState {
   createSession: () => void;
   switchSession: (id: string) => void;
   deleteSessionById: (id: string) => void;
-  sendMessage: (content: string) => void;
+  sendMessage: (content: string, attachments?: ImageAttachment[]) => void;
   stopStreaming: (sessionId?: string) => void;
   setModel: (model: string, providerId?: string) => void;
   toggleSidebar: () => void;
@@ -53,6 +53,18 @@ function sanitizeGeneratedTitle(rawTitle: string): string {
     .map((line) => line.trim())
     .find((line) => line.length > 0)
     ?.slice(0, 100) || "";
+}
+
+function getMessageTextForTitle(message: Message): string {
+  if (message.content.trim()) {
+    return message.content;
+  }
+
+  if (message.attachments?.length) {
+    return `Shared ${message.attachments.length} image${message.attachments.length > 1 ? "s" : ""}.`;
+  }
+
+  return "";
 }
 
 export function ChatProvider({ children }: { children: React.ReactNode }) {
@@ -207,9 +219,14 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
   }, [state.activeSessionId]);
 
   const sendMessage = useCallback(
-    (content: string) => {
-      const activeSessionId = state.activeSessionId;
-      if (!content.trim() || (activeSessionId && state.streamingSessionIds.includes(activeSessionId))) return;
+      (content: string, attachments: ImageAttachment[] = []) => {
+        const activeSessionId = state.activeSessionId;
+        if (
+          (!content.trim() && attachments.length === 0) ||
+          (activeSessionId && state.streamingSessionIds.includes(activeSessionId))
+        ) {
+          return;
+        }
 
       const generateTitleInBackground = async (
         sessionId: string,
@@ -229,7 +246,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
           const titleMessages: Array<Pick<Message, "role" | "content">> = [
             ...contextMessages.map((m) => ({
               role: m.role,
-              content: m.content,
+              content: getMessageTextForTitle(m),
             })),
             { role: "user", content: titlePrompt },
           ];
@@ -325,6 +342,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
         id: generateId(),
         role: "user",
         content,
+        attachments: attachments.length > 0 ? attachments : undefined,
         createdAt: Date.now(),
       };
 

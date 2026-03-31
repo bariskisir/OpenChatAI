@@ -1,7 +1,56 @@
 import { Message } from "./types";
 import { PROVIDERS, getProvider, DEFAULT_PROVIDER, DEFAULT_MODEL, getDefaultProvider } from "./providers";
+import { supportsImageAttachments } from "./image-support";
 
 export { PROVIDERS, getProvider, DEFAULT_PROVIDER, DEFAULT_MODEL, getDefaultProvider };
+
+function toProviderMessage(message: Message) {
+  if (!message.attachments?.length) {
+    return { role: message.role, content: message.content };
+  }
+
+  const contentParts: Array<
+    | { type: "text"; text: string }
+    | { type: "image_url"; image_url: { url: string } }
+  > = [];
+
+  if (message.content.trim()) {
+    contentParts.push({ type: "text", text: message.content });
+  }
+
+  for (const attachment of message.attachments) {
+    contentParts.push({
+      type: "image_url",
+      image_url: { url: attachment.dataUrl },
+    });
+  }
+
+  return {
+    role: message.role,
+    content: contentParts,
+  };
+}
+
+function sanitizeMessagesForModel(
+  providerId: string,
+  model: string,
+  messages: Message[],
+): Message[] {
+  if (supportsImageAttachments(providerId, model)) {
+    return messages;
+  }
+
+  return messages.map((message) => {
+    if (!message.attachments?.length) {
+      return message;
+    }
+
+    return {
+      ...message,
+      attachments: undefined,
+    };
+  });
+}
 
 export async function streamChat(
   providerId: string,
@@ -12,10 +61,12 @@ export async function streamChat(
   onError: (err: string) => void,
   signal?: AbortSignal,
 ): Promise<void> {
+  const sanitizedMessages = sanitizeMessagesForModel(providerId, model, messages);
+
   const body = JSON.stringify({
     providerId,
     model,
-    messages: messages.map((m) => ({ role: m.role, content: m.content })),
+    messages: sanitizedMessages.map(toProviderMessage),
   });
 
   try {

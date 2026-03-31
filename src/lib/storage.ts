@@ -7,7 +7,21 @@ export function loadSessions(): ChatSession[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return [];
-    return JSON.parse(raw) as ChatSession[];
+    const parsed = JSON.parse(raw) as ChatSession[];
+
+    return parsed.map((session) => ({
+      ...session,
+      messages: session.messages.map((message) => ({
+        ...message,
+        attachments: Array.isArray(message.attachments)
+          ? message.attachments.filter(
+              (attachment) =>
+                typeof attachment?.dataUrl === "string" &&
+                typeof attachment?.mimeType === "string",
+            )
+          : undefined,
+      })),
+    }));
   } catch {
     return [];
   }

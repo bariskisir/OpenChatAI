@@ -8,13 +8,13 @@ export const openCodeZen: Provider = {
     "x-opencode-session": "",
   },
   availableModels: [
-    "mimo-v2-pro-free",
-    "minimax-m2.5-free",
-    "mimo-v2-omni-free",
-    "nemotron-3-super-free",
-    "big-pickle",
-    "trinity-large-preview-free",
-    "mimo-v2-flash-free",
+    { id: "mimo-v2-pro-free" },
+    { id: "minimax-m2.5-free" },
+    { id: "mimo-v2-omni-free", supportsImageInput: true },
+    { id: "nemotron-3-super-free" },
+    { id: "big-pickle" },
+    { id: "trinity-large-preview-free" },
+    { id: "mimo-v2-flash-free" },
   ],
 };
 

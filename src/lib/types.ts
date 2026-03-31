@@ -2,7 +2,15 @@ export interface Message {
   id: string;
   role: "user" | "assistant";
   content: string;
+  attachments?: ImageAttachment[];
   createdAt: number;
+}
+
+export interface ImageAttachment {
+  id: string;
+  name: string;
+  mimeType: string;
+  dataUrl: string;
 }
 
 export interface ChatSession {
@@ -20,10 +28,11 @@ export interface Provider {
   name: string;
   chatUrl: string;
   headers?: Record<string, string>;
-  availableModels: string[];
+  availableModels: ModelOption[];
 }
 
 export interface ModelOption {
   id: string;
-  name: string;
+  name?: string;
+  supportsImageInput?: boolean;
 }

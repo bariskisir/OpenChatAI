@@ -45,21 +45,28 @@ export default function ModelSelector() {
               <div key={provider.id}>
                 <div className="provider-header">{provider.name}</div>
 
-                {provider.availableModels.map((model) => {
+                {provider.availableModels.map((modelOption) => {
+                  const modelId: string = modelOption.id;
                   const selected =
-                    model === currentModel && provider.id === currentProviderId;
+                    modelId === currentModel && provider.id === currentProviderId;
 
                   return (
                     <button
-                      key={model}
+                      key={modelId}
                       onClick={() => {
-                        setModel(model, provider.id);
+                        setModel(modelId, provider.id);
                         setOpen(false);
                       }}
                       className={`model-option ${selected ? "selected" : ""}`}
                     >
                       {selected && <i className="bi bi-check-lg flex-shrink-0"></i>}
-                      <span className="model-option-text">{model}</span>
+                      <span className="model-option-text">{modelOption.name || modelId}</span>
+                      {modelOption.supportsImageInput ? (
+                        <i
+                          className="bi bi-image model-option-capability"
+                          title="Supports image input"
+                        ></i>
+                      ) : null}
                     </button>
                   );
                 })}
