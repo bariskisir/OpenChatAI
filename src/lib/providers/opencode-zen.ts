@@ -10,6 +10,7 @@ export const openCodeZen: Provider = {
   availableModels: [
     { id: "mimo-v2-pro-free" },
     { id: "minimax-m2.5-free" },
+    { id: "qwen3.6-plus-free" },
     { id: "mimo-v2-omni-free", supportsImageInput: true },
     { id: "nemotron-3-super-free" },
     { id: "big-pickle" },
