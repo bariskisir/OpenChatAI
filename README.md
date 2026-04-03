@@ -13,20 +13,6 @@ A ChatGPT-like open chat interface built with Next.js, TypeScript, and Tailwind 
 - **Session Management** - Create, switch, and delete chat sessions stored in LocalStorage
 - **Dynamic Model Selection** - Models fetched from API and intersected with configured list
 
-## Supported Providers
-
-### Cline
-- **Models:** moonshotai/kimi-k2.5 (default), z-ai/glm-5, minimax/minimax-m2.5, z-ai/glm-4.6, xiaomi/mimo-v2-pro, minimax/minimax-m2.5:free, kwaipilot/kat-coder-pro, arcee-ai/trinity-large-preview:free, google/gemma-3-12b-it:free, google/gemma-3-27b-it:free, google/gemma-3-4b-it:free, google/gemma-3n-e2b-it:free, google/gemma-3n-e4b-it:free, nvidia/nemotron-3-super-120b-a12b:free
-
-### OpenCode Zen
-- **Models:** minimax-m2.5-free, nemotron-3-super-free, big-pickle, trinity-large-preview-free, mimo-v2-flash-free
-
-### OpenRouter
-- **Models:** hunter-alpha, healer-alpha, trinity-large-preview:free, nemotron-3-nano-30b-a3b:free, trinity-mini:free, openrouter/free
-
-### Together AI
-- **Models:** ServiceNow-AI/Apriel-1.6-15b-Thinker, ServiceNow-AI/Apriel-1.5-15b-Thinker
-
 ## Tech Stack
 
 - **Framework:** Next.js 16 (App Router)
@@ -47,15 +33,7 @@ A ChatGPT-like open chat interface built with Next.js, TypeScript, and Tailwind 
 #### .env template
 
 ```env
-# Server / App Configuration
-#DEFAULT_MODEL=moonshotai/kimi-k2.5
-#DEFAULT_PROVIDER=cline
-
-# API Keys
 CLINE_API_KEY=INSERT_API_KEY_HERE
-TOGETHER_API_KEY=INSERT_API_KEY_HERE
-OPENCODE_ZEN_API_KEY=INSERT_API_KEY_HERE
-OPENROUTER_API_KEY=INSERT_API_KEY_HERE
 ```
 
 ## License
