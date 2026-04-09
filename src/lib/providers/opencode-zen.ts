@@ -9,7 +9,6 @@ export const openCodeZen: Provider = {
   },
   availableModels: [
     { id: "minimax-m2.5-free" },
-    { id: "qwen3.6-plus-free" },
     { id: "nemotron-3-super-free" },
     { id: "big-pickle" },
   ],

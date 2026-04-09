@@ -5,7 +5,7 @@ import { Provider } from "@/lib/types";
 export const PROVIDERS: Provider[] = [cline, openCodeZen];
 
 export const DEFAULT_PROVIDER = process.env.DEFAULT_PROVIDER || "cline";
-export const DEFAULT_MODEL = process.env.DEFAULT_MODEL || "minimax/minimax-m2.5";
+export const DEFAULT_MODEL = process.env.DEFAULT_MODEL || "moonshotai/kimi-k2.5";
 
 export function getProvider(providerId: string): Provider | undefined {
   return PROVIDERS.find((p) => p.id === providerId);
