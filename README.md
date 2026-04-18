@@ -30,11 +30,7 @@ A ChatGPT-like open chat interface built with Next.js, TypeScript, and Tailwind 
 4. Run the development server: `npm run dev`
 5. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-#### .env template
 
-```env
-CLINE_API_KEY=INSERT_API_KEY_HERE
-```
 
 ## License
 
